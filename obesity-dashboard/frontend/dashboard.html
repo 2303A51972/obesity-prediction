@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Health Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="navbar">
+  <h2>AI Health Analyzer</h2>
+  <button onclick="logout()">Logout</button>
+</div>
+
+<!-- Hero Section -->
+<div class="hero">
+  <h1>Predict Your Health Risk</h1>
+  <p>Smart AI-based obesity risk analysis</p>
+</div>
+
+<!-- Stats -->
+<div class="dashboard">
+  <div class="card fade">Patients <br><span id="patients"></span></div>
+  <div class="card fade">Obesity Rate <br><span id="rate"></span></div>
+  <div class="card fade">AUC <br><span id="auc"></span></div>
+  <div class="card fade">Recall <br><span id="recall"></span></div>
+</div>
+
+<!-- Prediction -->
+<div class="predict-box glass fade">
+  <h2>Health Risk Analyzer</h2>
+
+  <input id="age" placeholder="Age">
+  <input id="weight" placeholder="Weight (kg)">
+  <input id="height" placeholder="Height (cm)">
+
+  <button onclick="predict()">Analyze</button>
+
+  <h2 id="result"></h2>
+  <p id="tips"></p>
+</div>
+
+<script src="script.js"></script>
+<script>loadDashboard();</script>
+
+</body>
+</html>
