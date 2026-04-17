@@ -17,18 +17,30 @@ function getGoogleClientSecret() {
   return isPlaceholder ? "" : clientSecret;
 }
 
-function getGoogleRedirectUri() {
-  return process.env.GOOGLE_REDIRECT_URI || "http://localhost:5000/api/auth/google/callback";
+function getGoogleRedirectUri(req) {
+  if (process.env.GOOGLE_REDIRECT_URI) {
+    return process.env.GOOGLE_REDIRECT_URI;
+  }
+
+  const protocol = req.get("x-forwarded-proto") || req.protocol;
+  const host = req.get("host");
+  return `${protocol}://${host}/api/auth/google/callback`;
 }
 
-function getFrontendUrl() {
-  return process.env.FRONTEND_URL || "http://localhost:5173";
+function getFrontendUrl(req) {
+  if (process.env.FRONTEND_URL) {
+    return process.env.FRONTEND_URL;
+  }
+
+  const protocol = req.get("x-forwarded-proto") || req.protocol;
+  const host = req.get("host");
+  return `${protocol}://${host}`;
 }
 
-function createGoogleClient() {
+function createGoogleClient(req) {
   const clientId = getGoogleClientId();
   const clientSecret = getGoogleClientSecret();
-  const redirectUri = getGoogleRedirectUri();
+  const redirectUri = getGoogleRedirectUri(req);
 
   if (!clientId || !clientSecret) {
     return null;
@@ -52,17 +64,17 @@ router.get("/google-config", (req, res) => {
 });
 
 router.get("/google/start", (req, res) => {
-  const googleClient = createGoogleClient();
+  const googleClient = createGoogleClient(req);
 
   if (!googleClient) {
-    return res.redirect(`${getFrontendUrl()}/login.html?error=google_not_configured`);
+    return res.redirect(`${getFrontendUrl(req)}/login.html?error=google_not_configured`);
   }
 
   const authUrl = googleClient.generateAuthUrl({
     access_type: "offline",
     prompt: "consent",
     scope: ["openid", "email", "profile"],
-    redirect_uri: getGoogleRedirectUri(),
+    redirect_uri: getGoogleRedirectUri(req),
   });
 
   return res.redirect(authUrl);
@@ -73,17 +85,17 @@ router.get("/google/callback", async (req, res) => {
     const code = req.query.code;
 
     if (!code) {
-      return res.redirect(`${getFrontendUrl()}/login.html?error=missing_code`);
+      return res.redirect(`${getFrontendUrl(req)}/login.html?error=missing_code`);
     }
 
-    const googleClient = createGoogleClient();
+    const googleClient = createGoogleClient(req);
     if (!googleClient) {
-      return res.redirect(`${getFrontendUrl()}/login.html?error=google_not_configured`);
+      return res.redirect(`${getFrontendUrl(req)}/login.html?error=google_not_configured`);
     }
 
     const { tokens } = await googleClient.getToken(code);
     if (!tokens.id_token) {
-      return res.redirect(`${getFrontendUrl()}/login.html?error=missing_id_token`);
+      return res.redirect(`${getFrontendUrl(req)}/login.html?error=missing_id_token`);
     }
 
     const ticket = await googleClient.verifyIdToken({
@@ -95,7 +107,7 @@ router.get("/google/callback", async (req, res) => {
     const email = payload?.email;
 
     if (!email) {
-      return res.redirect(`${getFrontendUrl()}/login.html?error=google_email_missing`);
+      return res.redirect(`${getFrontendUrl(req)}/login.html?error=google_email_missing`);
     }
 
     let user = await User.findOne({ email });
@@ -116,9 +128,9 @@ router.get("/google/callback", async (req, res) => {
     }
 
     const token = signToken(user._id);
-    return res.redirect(`${getFrontendUrl()}/dashboard.html?token=${encodeURIComponent(token)}`);
+    return res.redirect(`${getFrontendUrl(req)}/dashboard.html?token=${encodeURIComponent(token)}`);
   } catch (err) {
-    return res.redirect(`${getFrontendUrl()}/login.html?error=google_callback_failed`);
+    return res.redirect(`${getFrontendUrl(req)}/login.html?error=google_callback_failed`);
   }
 });
 

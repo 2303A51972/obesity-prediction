@@ -11,6 +11,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.set("trust proxy", true);
 
 // Serve static files from frontend directory
 app.use(express.static(path.join(__dirname, '../frontend')));
@@ -22,4 +23,5 @@ app.get("/", (req, res) => {
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/data", require("./routes/data"));
 
-app.listen(5000, () => console.log("Server running on port 5000"));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

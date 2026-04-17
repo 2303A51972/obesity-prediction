@@ -1,4 +1,5 @@
-const API = "https://obesity-prediction-ymbk.onrender.com/api";
+const isLocalhost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+const API = isLocalhost ? "http://localhost:5000/api" : `${window.location.origin}/api`;
 const GOOGLE_REDIRECT_ENDPOINT = `${API}/auth/google/start`;
 const PREDICTION_HISTORY_KEY = "obesityPredictionHistory";
 
@@ -88,10 +89,14 @@ function signInWithGoogle() {
 }
 
 function showGoogleOriginHelp() {
+  const callbackUrl = isLocalhost
+    ? "http://localhost:5000/api/auth/google/callback"
+    : `${window.location.origin}/api/auth/google/callback`;
+
   alert(
     "Google sign-in now uses a backend redirect flow. If you still see an error, add this redirect URI in Google Cloud Console:\n\n" +
-    "http://localhost:5000/api/auth/google/callback\n\n" +
-    "Also set backend/.env with GOOGLE_CLIENT_SECRET and GOOGLE_REDIRECT_URI."
+    `${callbackUrl}\n\n` +
+    "Also set backend/.env with GOOGLE_CLIENT_SECRET and GOOGLE_REDIRECT_URI to the same value."
   );
 }
 
