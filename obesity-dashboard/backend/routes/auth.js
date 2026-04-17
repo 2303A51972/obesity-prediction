@@ -71,8 +71,8 @@ router.get("/google/start", (req, res) => {
   }
 
   const authUrl = googleClient.generateAuthUrl({
-    access_type: "offline",
-    prompt: "consent",
+    access_type: "online",
+    prompt: "select_account",
     scope: ["openid", "email", "profile"],
     redirect_uri: getGoogleRedirectUri(req),
   });
