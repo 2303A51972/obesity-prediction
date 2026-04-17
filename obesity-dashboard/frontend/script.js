@@ -1,4 +1,4 @@
-const API = "http://localhost:5000/api";
+const API = "https://obesity-prediction-vz21.onrender.com/api";
 const GOOGLE_REDIRECT_ENDPOINT = `${API}/auth/google/start`;
 const PREDICTION_HISTORY_KEY = "obesityPredictionHistory";
 
