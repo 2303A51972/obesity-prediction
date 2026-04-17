@@ -1,4 +1,4 @@
-const API = "https://obesity-prediction-vz21.onrender.com/api";
+const API = "https://obesity-prediction-ymbk.onrender.com/api";
 const GOOGLE_REDIRECT_ENDPOINT = `${API}/auth/google/start`;
 const PREDICTION_HISTORY_KEY = "obesityPredictionHistory";
 
