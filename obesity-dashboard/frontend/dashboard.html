@@ -1,46 +1,233 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>AI Health Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ObesityPredict AI - Health Assessment</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="dashboard-page">
+  <header class="assessment-topbar">
+    <a class="brand" href="index.html" aria-label="ObesityPredict AI home">
+      <span class="brand-mark">∿</span>
+      <span>ObesityPredict AI</span>
+    </a>
 
-<div class="navbar">
-  <h2>AI Health Analyzer</h2>
-  <button onclick="logout()">Logout</button>
-</div>
+    <div class="topbar-right">
+      <button class="profile-chip profile-chip-button" type="button" onclick="toggleHistoryPanel()">History</button>
+      <span class="profile-chip" id="profileName">Signed In User</span>
+      <button class="logout-pill" type="button" onclick="logout()">Logout</button>
+    </div>
+  </header>
 
-<!-- Hero Section -->
-<div class="hero">
-  <h1>Predict Your Health Risk</h1>
-  <p>Smart AI-based obesity risk analysis</p>
-</div>
+  <aside id="historyPanel" class="history-panel hidden" aria-label="Prediction history">
+    <div class="history-head">
+      <h2>Prediction History</h2>
+      <button type="button" class="history-close" onclick="toggleHistoryPanel(false)">Close</button>
+    </div>
+    <div id="historyList" class="history-list"></div>
+    <div class="history-foot">
+      <button type="button" class="history-clear" onclick="clearSelectedHistory()">Clear Selected</button>
+      <button type="button" class="history-clear history-clear-all" onclick="clearPredictionHistory()">Clear All</button>
+    </div>
+  </aside>
 
-<!-- Stats -->
-<div class="dashboard">
-  <div class="card fade">Patients <br><span id="patients"></span></div>
-  <div class="card fade">Obesity Rate <br><span id="rate"></span></div>
-  <div class="card fade">AUC <br><span id="auc"></span></div>
-  <div class="card fade">Recall <br><span id="recall"></span></div>
-</div>
+  <main class="assessment-shell">
+    <section id="assessmentView" class="workflow-view">
+      <a class="back-link" href="index.html">← Back to Home</a>
 
-<!-- Prediction -->
-<div class="predict-box glass fade">
-  <h2>Health Risk Analyzer</h2>
+      <section class="assessment-card">
+        <div class="assessment-hero">
+          <h1>Health Assessment Form</h1>
+          <p>Please provide accurate details for a more precise prediction.</p>
+        </div>
 
-  <input id="age" placeholder="Age">
-  <input id="weight" placeholder="Weight (kg)">
-  <input id="height" placeholder="Height (cm)">
+        <div class="assessment-body">
+          <div class="assessment-grid">
+            <label>
+              <span>Age</span>
+              <input id="age" type="number" min="5" max="100" value="25">
+            </label>
 
-  <button onclick="predict()">Analyze</button>
+            <label>
+              <span>Gender</span>
+              <select id="gender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </label>
 
-  <h2 id="result"></h2>
-  <p id="tips"></p>
-</div>
+            <label>
+              <span>Height (cm)</span>
+              <input id="height" type="number" min="100" max="230" value="170">
+            </label>
 
-<script src="script.js"></script>
-<script>loadDashboard();</script>
+            <label>
+              <span>Weight (kg)</span>
+              <input id="weight" type="number" min="20" max="250" value="70">
+            </label>
+          </div>
 
+          <hr>
+
+          <div class="section-title">🍴 Dietary Habits</div>
+
+          <div class="assessment-grid">
+            <fieldset>
+              <legend>Family history of overweight?</legend>
+              <div class="binary-options">
+                <label class="inline-option"><input type="radio" name="familyHistory" value="yes"> <span>Yes</span></label>
+                <label class="inline-option"><input type="radio" name="familyHistory" value="no" checked> <span>No</span></label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Frequent high caloric food?</legend>
+              <div class="binary-options">
+                <label class="inline-option"><input type="radio" name="highCaloric" value="yes"> <span>Yes</span></label>
+                <label class="inline-option"><input type="radio" name="highCaloric" value="no" checked> <span>No</span></label>
+              </div>
+            </fieldset>
+          </div>
+
+          <label class="range-field">
+            <div class="range-head">
+              <span>Vegetable consumption frequency</span>
+              <strong id="vegVal">2 / 3</strong>
+            </div>
+            <input id="vegetables" type="range" min="0" max="3" step="1" value="2" oninput="syncRangeLabel('vegetables','vegVal',' / 3')">
+          </label>
+
+          <label class="range-field">
+            <div class="range-head">
+              <span>Number of main meals per day</span>
+              <strong id="mealVal">3</strong>
+            </div>
+            <input id="mainMeals" type="range" min="1" max="5" step="1" value="3" oninput="syncRangeLabel('mainMeals','mealVal')">
+          </label>
+
+          <hr>
+
+          <div class="section-title">⌁ Lifestyle &amp; Activity</div>
+
+          <div class="assessment-grid">
+            <label>
+              <span>Physical activity frequency (days/week)</span>
+              <select id="activity">
+                <option value="0">0</option>
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Daily water consumption (Liters)</span>
+              <select id="water">
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+                <option value="4">4+</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Primary transportation</span>
+              <select id="transport">
+                <option value="walking">Walking</option>
+                <option value="bike">Bike</option>
+                <option value="public" selected>Public_Transportation</option>
+                <option value="car">Automobile</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Alcohol consumption</span>
+              <select id="alcohol">
+                <option value="none">Never</option>
+                <option value="sometimes" selected>Sometimes</option>
+                <option value="frequent">Frequent</option>
+                <option value="daily">Daily</option>
+              </select>
+            </label>
+          </div>
+
+          <button class="predict-btn" type="button" onclick="generateAssessmentPrediction()">Generate AI Prediction</button>
+        </div>
+      </section>
+    </section>
+
+    <section id="loadingView" class="workflow-view hidden">
+      <div class="loading-wrap">
+        <div class="loader"></div>
+        <h2>Analyzing Your Data...</h2>
+        <p>Gemini AI is processing your health profile to generate a personalized prediction and diet plan.</p>
+      </div>
+    </section>
+
+    <section id="reportView" class="workflow-view hidden">
+      <div class="report-actions">
+        <button class="back-link-button" type="button" onclick="goBackToAssessment()">← Back to Form</button>
+        <button class="download-btn" type="button" onclick="downloadReport()">Download Report (PDF)</button>
+      </div>
+
+      <h1 class="report-title">Your Health Dashboard</h1>
+
+      <div class="report-grid">
+        <article class="report-main-card">
+          <div class="report-head">
+            <div>
+              <h2 id="riskTitle">Normal Weight</h2>
+              <p>Based on your BMI of <strong id="bmiValue">24.2</strong></p>
+            </div>
+            <span class="analysis-badge">AI Analysis</span>
+          </div>
+
+          <section class="report-section">
+            <h3>ⓘ Risk Analysis</h3>
+            <p id="riskText"></p>
+          </section>
+
+          <section class="report-section">
+            <h3>✓ Key Recommendations</h3>
+            <div id="recommendationGrid" class="recommendation-grid"></div>
+          </section>
+        </article>
+
+        <aside class="report-side-card">
+          <h3>🍽 Personalized Diet Plan</h3>
+          <div class="diet-tabs">
+            <button id="tab-breakfast" type="button" class="diet-tab active" onclick="setDietTab('breakfast')">Breakfast</button>
+            <button id="tab-lunch" type="button" class="diet-tab" onclick="setDietTab('lunch')">Lunch</button>
+            <button id="tab-dinner" type="button" class="diet-tab" onclick="setDietTab('dinner')">Dinner</button>
+          </div>
+          <ul id="dietList" class="diet-list"></ul>
+
+          <div class="snacks-box">
+            <h4>⚡ Healthy Snacks</h4>
+            <div id="snackChips" class="chips-wrap"></div>
+          </div>
+
+          <div class="tips-box">
+            <h4>Pro Tips:</h4>
+            <ul id="proTips"></ul>
+          </div>
+        </aside>
+      </div>
+
+      <p class="report-disclaimer">
+        Disclaimer: This prediction is generated by AI for informational purposes only. Always consult with a healthcare professional before making significant changes to your diet or lifestyle.
+      </p>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>

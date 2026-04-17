@@ -1,8 +1,26 @@
 const express = require("express");
 const router = express.Router();
+const jwt = require("jsonwebtoken");
+
+function requireAuth(req, res, next) {
+  const authHeader = req.headers.authorization || "";
+  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
+
+  if (!token) {
+    return res.status(401).json({ msg: "Unauthorized: token missing" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret");
+    req.user = decoded;
+    return next();
+  } catch (err) {
+    return res.status(401).json({ msg: "Unauthorized: invalid token" });
+  }
+}
 
 // Dashboard stats
-router.get("/stats", (req, res) => {
+router.get("/stats", requireAuth, (req, res) => {
   res.json({
     totalPatients: 860510,
     obesityRate: "17.03%",
@@ -12,7 +30,7 @@ router.get("/stats", (req, res) => {
 });
 
 // 🔥 Prediction API
-router.post("/predict", (req, res) => {
+router.post("/predict", requireAuth, (req, res) => {
   const { age, weight, height } = req.body;
 
   // BMI calculation

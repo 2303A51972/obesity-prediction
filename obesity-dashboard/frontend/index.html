@@ -1,20 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Register</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ObesityPredict AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="landing-page">
+  <header class="topbar">
+    <a class="brand" href="index.html" aria-label="ObesityPredict AI home">
+      <span class="brand-mark">∿</span>
+      <span>ObesityPredict AI</span>
+    </a>
 
-<div class="container">
-  <h2>Create Account</h2>
+    <button class="topbar-button" type="button" onclick="signInWithGoogle()">Sign In with Google</button>
+  </header>
 
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
+  <main class="hero-shell">
+    <section class="hero copy-center">
+      <p class="eyebrow">AI-powered obesity risk insights</p>
+      <h1>Predict Your Health, Plan Your Future.</h1>
+      <p class="hero-copy">
+        Get an instant obesity risk assessment and a personalized nutrition plan tailored to your lifestyle using advanced AI.
+      </p>
 
-  <button onclick="register()">Register</button>
-</div>
+      <div class="hero-actions">
+        <button class="primary-cta" type="button" onclick="signInWithGoogle()">
+          <span>Sign In to Start</span>
+          <span aria-hidden="true">→</span>
+        </button>
 
-<script src="script.js"></script>
+        <a class="secondary-cta" href="signup.html">
+          <span>Create Account</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="feature-grid" aria-label="Features">
+      <article class="feature-card">
+        <div class="feature-icon">⚖</div>
+        <h2>Risk Assessment</h2>
+        <p>Understand your current health profile and potential risks.</p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon">🍴</div>
+        <h2>Diet Planning</h2>
+        <p>Get a personalized meal plan based on your unique data.</p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h2>Instant Results</h2>
+        <p>Powered by Gemini AI for fast and accurate insights.</p>
+      </article>
+    </section>
+  </main>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="script.js"></script>
 </body>
 </html>

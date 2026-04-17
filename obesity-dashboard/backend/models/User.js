@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-  email: String,
-  password: String
+  email: { type: String, required: true, unique: true },
+  password: { type: String, default: null },
+  authProvider: { type: String, enum: ["local", "google"], default: "local" }
 });
 
 module.exports = mongoose.model("User", UserSchema);
